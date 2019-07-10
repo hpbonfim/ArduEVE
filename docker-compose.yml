@@ -1,22 +1,33 @@
 version: "3.5"
-services:
-  # Portainer para gerenciar os Dockerfiles
-  portainer:
-    image: portainer/portainer:latest
-    restart: always
-    container_name: portainer
-    ports:
-    - ${PORTAINER_PORT}
-    volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
-    - portainer-data:/data
-  # microservice para controlar o Arduino
+  services:
+    # Portainer para gerenciar os Dockerfiles
+    portainer:
+      image: portainer/portainer:latest
+      restart: always
+      container_name: portainer
+      ports:
+      - ${PORTAINER_PORT}
+      volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-data:/data
+
+    # microservice para controlar o Arduino
+    ms-arduino:
+      build: "./ms-arduino/"
+      container_name: ms-arduino #image: hpbonfim/ardueve-microservice-arduino:latest
+      privileged: true
+      devices:
+      - /dev:/dev
+      command: npm start
+
+      
+    # microservice para controlar o FrontEnd (VUE)
     
-  # microservice para controlar o FrontEnd (VUE)
-  
-  # microservice para controlar o BackEnd (NODEJS)
+    # microservice para controlar o BackEnd (NODEJS)
 
-  # microservice para controlar o Banco de Dados (MONGOOSE)
-  
-  # microservice para fazer deploy automático para o Firebase(PQ TO COM PREGUIÇA)
+    # microservice para controlar o Banco de Dados (MONGOOSE)
+    
+    # microservice para fazer deploy automático para o Firebase(PQ TO COM PREGUIÇA)
 
+volumes:
+  portainer-data:

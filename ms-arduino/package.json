@@ -1,0 +1,20 @@
+{
+  "name": "ms-arduino",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "node index.js",
+    "000": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "Henrique Paulo Bonfim",
+  "license": "Mozilla Public License 2.0",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "firmata": "^2.0.0",
+    "helmet": "^3.18.0",
+    "johnny-five": "^1.1.0",
+    "serialport": "^7.1.5"
+  }
+}

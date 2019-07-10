@@ -1,0 +1,22 @@
+version: "3.5"
+services:
+  # Portainer para gerenciar os Dockerfiles
+  portainer:
+    image: portainer/portainer:latest
+    restart: always
+    container_name: portainer
+    ports:
+    - ${PORTAINER_PORT}
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - portainer-data:/data
+  # microservice para controlar o Arduino
+    
+  # microservice para controlar o FrontEnd (VUE)
+  
+  # microservice para controlar o BackEnd (NODEJS)
+
+  # microservice para controlar o Banco de Dados (MONGOOSE)
+  
+  # microservice para fazer deploy automático para o Firebase(PQ TO COM PREGUIÇA)
+

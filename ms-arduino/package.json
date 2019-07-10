@@ -2,7 +2,7 @@
   "name": "ms-arduino",
   "version": "0.0.0",
   "scripts": {
-    "start": "node index.js",
+    "ms-arduino": "node index.js",
     "000": "nodemon index.js"
   },
   "keywords": [],

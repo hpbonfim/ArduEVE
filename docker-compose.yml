@@ -15,31 +15,98 @@ services:
   ms-arduino:
     build: "./ms-arduino/"
     container_name: ms-arduino #image: hpbonfim/ardueve-microservice-arduino:latest
-    privileged: true
     ports:
-    - ${ARDUINO_PORT}
+      - ${PORT_MS_ARDUINO}
+    privileged: true
     devices:
     - /dev:/dev
+    entrypoint:
+    - "/usr/local/bin/docker-entrypoint.sh"
+    networks:
+      backend:
+        ipv4_address: ${IP_MS_ARDUINO}
     
   # microservice para controlar o BackEnd (NODEJS)
-    ms-backend:
+  ms-backend:
     build: "./ms-backend/"
     container_name: ms-backend #image: hpbonfim/ardueve-microservice-backend:latest
+    restart: always
     ports:
-    - ${BACKEND_PORT}
-    privileged: true
+      - ${PORT_MS_BACKEND}
+    entrypoint:
+    - '/usr/local/bin/docker-entrypoint.sh'
+    networks:
+      backend:
+        ipv4_address: ${IP_MS_BACKEND}
+    depends_on:
+      - mongo
+      - mongo-express
 
   # microservice para controlar o FrontEnd (VUE)
-    # ms-frontend:
-    # build: "./ms-frontend/"
-    # container_name: ms-frontend #image: hpbonfim/ardueve-microservice-frontend:latest
-    # ports:
-    # - ${FRONTEND_PORT}
-    # privileged: true
+  ms-frontend:
+    build: "./ms-frontend/"
+    container_name: ms-frontend #image: hpbonfim/ardueve-microservice-frontend:latest
+    restart: always
+    ports:
+    - ${PORT_MS_FRONTEND}
+    privileged: true
+    networks:
+      frontend: 
+        ipv4_address: ${NET_IP_FRONTEND}
+      backend:
+        ipv4_address: ${IP_MS_FRONTEND}
+    depends_on:
+      - ms-backend
 
   # microservice para controlar o Banco de Dados (MONGOOSE)
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    restart: always
+    command: --smallfiles
+    volumes:
+    - mongo-database:/data
+    enviromnets:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_GUY}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_SUPERKEY}
+    networks:
+    - backend
+
+  # mongo-express para controle do mongo
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-board
+    restart: always
+    ports:
+    - ${DB_PORT}
+    networks:
+    - backend
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: ${DB_ADMIN}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${DB_KEY}
+    depends_on:
+    - mongo
   
   # microservice para fazer deploy automático para o Firebase(PQ TO COM PREGUIÇA)
 
+    
+
+frontend:
+  driver: bridge
+  ipam:
+    driver: default
+    config:
+    - subnet: ${SUBNET_FRONTEND}
+
+networks:
+  backend:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: ${SUBNET_BACKEND}
+
+    
 volumes:
+  mongo-database:
   portainer-data:

@@ -21,7 +21,7 @@ services:
     devices:
     - /dev:/dev
     
-  # microservice para controlar o FrontEnd (VUE)
+  # microservice para controlar o BackEnd (NODEJS)
     ms-backend:
     build: "./ms-backend/"
     container_name: ms-backend #image: hpbonfim/ardueve-microservice-backend:latest
@@ -29,7 +29,7 @@ services:
     - ${BACKEND_PORT}
     privileged: true
 
-  # microservice para controlar o BackEnd (NODEJS)
+  # microservice para controlar o FrontEnd (VUE)
     # ms-frontend:
     # build: "./ms-frontend/"
     # container_name: ms-frontend #image: hpbonfim/ardueve-microservice-frontend:latest

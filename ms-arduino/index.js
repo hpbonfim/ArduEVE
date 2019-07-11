@@ -1,9 +1,9 @@
-const port = process.env.ARDUINO_PORT || 3001
+const port = process.env.ARDUINO_PORT || 3003
 const bodyParser = require('body-parser')
 const five = require('johnny-five')
 const helmet = require('helmet')
 const cors = require('cors')
-const board = five.Board({repl: false, port: '/dev/rfcomm1'})
+const board = five.Board({repl: false, port: '/dev/rfcomm2'})
 const express = require('express')
 const app = express()
 
@@ -70,7 +70,7 @@ board.on("ready", function() {
     // PHOTORESISTOR SENSOR TEMPERATURA
     var photoresistor = new five.Sensor({
         pin: "A1",
-        freq: 250
+        freq: 1000
     });
 
     // LM35 SENSOR TEMPERATURA
@@ -81,121 +81,130 @@ board.on("ready", function() {
     });
 //---------------------- RELAY 1
     app.use('/r1', (req, res, next) => {
-        console.log( new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString());
         relay1.on();
         setTimeout(() => {  
-            res.sendStatus(200);
-            next()
             relay1.off();
         }, 700)
+        res.status(200).json({
+            message: new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString()
+        })
     })
 
 //---------------------- RELAY 2
     app.use('/r2', (req, res, next) => {
-        console.log( new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString());
-        relay2.on();
-        setTimeout(() => {  
-            res.sendStatus(200);
-            next()
+        if(!relay2.isOn){
+            relay2.on();
+            res.status(200).json({
+                message: "ligado:" + new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString()
+            })
+        }
+        else{
             relay2.off();
-        }, 700)
+            res.status(200).json({
+                message: "desligado:" + new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString()
+            })
+        }
     })
 
 //---------------------- RELAY 3
     app.use('/r3', (req, res, next) => {
-        console.log( new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString());
-        relay3.on();
-        setTimeout(() => {  
-            res.sendStatus(200);
-            next()
+        if(!relay3.isOn){
+            relay3.on();
+            res.status(200).json({
+                message: "ligado:" + new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString()
+            })
+        }
+        else{
             relay3.off();
-        }, 700)
+            res.status(200).json({
+                message: "desligado:" + new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString()
+            })
+        }
     })
 
 //---------------------- RELAY 4
     app.use('/r4', (req, res, next) => {
-        console.log( new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString());
-        relay4.on();
-        setTimeout(() => {  
-            res.sendStatus(200);
-            next()
+        if(!relay4.isOn){
+            relay4.on();
+            res.status(200).json({
+                message: "ligado:" + new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString()
+            })
+        }
+        else{
             relay4.off();
-        }, 700)
+            res.status(200).json({
+                message: "desligado:" + new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString()
+            })
+        }
     })
 
 //---------------------- PHOTOSENSOR
-    app.use('/photosensor', (req, res, next) => {
-        photoresistor.on("data", function() {
-            console.log("photosensor: ", new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString(), ">>>", this.value);
-        });
-        setTimeout(() => {  
-            res.sendStatus(200);
-            next()
-        }, 700)
-    })
+app.use('/photosensor', (req, res) => {
+    setTimeout(() => {  
+        var snap = photoresistor.on("data", function() {
+            // console.log("photosensor: ", new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString(), ">>>", this.value);
+        })
+        res.status(200).json({
+            message: snap.value
+        })
+    }, 1)
+})
 
 //---------------------- LM35
     app.use('/temp1', (req, res, next) => {
-        temperature.on("change", function() {
-            console.log( new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString(), ">>>", this.celsius + "°C", '\n');
-        });
         setTimeout(() => {  
-            res.sendStatus(200);
-            next()
-        }, 700)
+            var snap = temperature.on("change", function() {
+                // console.log( new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString(), ">>>", this.celsius + "°C", '\n');
+            });
+            res.status(200).json({
+                message: snap.celsius
+            })
+        }, 1)
     })
 
 //---------------------- BME280
     app.use('/temp0', (req, res, next) => {
-        multi.on("data", function() {
-            console.log("Thermometer");
-            console.log("  celsius      : ", this.thermometer.celsius);
-            console.log("  fahrenheit   : ", this.thermometer.fahrenheit);
-            console.log("  kelvin       : ", this.thermometer.kelvin);
-            console.log("--------------------------------------");
-        
-            console.log("Barometer");
-            console.log("  pressure     : ", this.barometer.pressure);
-            console.log("--------------------------------------");
-        
-            console.log("Hygrometer");
-            console.log("  humidity     : ", this.hygrometer.relativeHumidity);
-            console.log("--------------------------------------");
-        
-            console.log("Altimeter");
-            console.log("  feet         : ", this.altimeter.feet);
-            console.log("  meters       : ", this.altimeter.meters);
-            console.log("--------------------------------------");
-        });
         setTimeout(() => {  
-            res.sendStatus(200);
-            next()
-        }, 700)
+            var snap = multi.on("data", function() {
+                // console.log("Thermometer");
+                // console.log("  celsius      : ", this.thermometer.celsius);
+                // console.log("  fahrenheit   : ", this.thermometer.fahrenheit);
+                // console.log("  kelvin       : ", this.thermometer.kelvin);
+                // console.log("--------------------------------------");
+            
+                // console.log("Barometer");
+                // console.log("  pressure     : ", this.barometer.pressure);
+                // console.log("--------------------------------------");
+            
+                // console.log("Hygrometer");
+                // console.log("  humidity     : ", this.hygrometer.relativeHumidity);
+                // console.log("--------------------------------------");
+            
+                // console.log("Altimeter");
+                // console.log("  feet         : ", this.altimeter.feet);
+                // console.log("  meters       : ", this.altimeter.meters);
+                // console.log("--------------------------------------");
+            });
+            res.status(200).json({
+                message: { celsius:snap.thermometer.celsius, barometer: snap.barometer.pressure, humidity: snap.barometer.relativeHumidity, altimeter: snap.altimeter.meters }
+            })
+        }, 1)
     })
 //---------------------- LEDS
-    app.use('/abrir', (req, res, next) => {
-        RED.on();
-        this.wait(10000, function() {
-            // stop() terminates the interval
-            // off() shuts the led off
-            RED.stop().off();
-        });
-        YELLOW.on();
-        this.wait(10000, function() {
-            // stop() terminates the interval
-            // off() shuts the led off
-            YELLOW.stop().off();
-        });
-        GREEN.on();
-        this.wait(10000, function() {
-            // stop() terminates the interval
-            // off() shuts the led off
-            GREEN.stop().off();
-        });
+    app.use('/leds', (req, res, next) => {
         setTimeout(() => {  
-            res.sendStatus(200);
-            next()
+            RED.on();
+            YELLOW.on();
+            GREEN.on();
+            this.wait(10000, function() {
+                // stop() terminates the interval
+                // off() shuts the led off
+                RED.stop().off();
+                YELLOW.stop().off();
+                GREEN.stop().off();
+            });
         }, 700)
+        res.status(200).json({ message: new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString() })
     })
 
     app.listen(port, function() {

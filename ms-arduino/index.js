@@ -1,9 +1,9 @@
-const port = process.env.ARDUINO_PORT || 3003
+const port = process.env.PORT || 3332
 const bodyParser = require('body-parser')
 const five = require('johnny-five')
 const helmet = require('helmet')
 const cors = require('cors')
-const board = five.Board({repl: false, port: '/dev/rfcomm2'})
+const board = five.Board({repl: false, port: '/dev/rfcomm0'})
 const express = require('express')
 const app = express()
 
@@ -11,7 +11,7 @@ const app = express()
 //module.exports = app => {
     app.use(helmet()) // Ajuda na criptografia de dados
     app.use(cors(
-        { origin: ["http://localhost:3001"],
+        { origin: ["http://localhost:3333"],
         methods: ["GET"],
         allowedHeaders: ["Content-Type", "Authorization"] }
         ))
@@ -207,8 +207,17 @@ app.use('/photosensor', (req, res) => {
         res.status(200).json({ message: new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString() })
     })
 
+//---------------------- STATUS BOARD
+    app.use('/statusBoard', (req, res, next) => {
+        setTimeout(() => {  
+            res.status(200).json({
+                message: 'Arduino OK:' + new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString()
+            })
+        }, 1)
+    })
+
     app.listen(port, function() {
-        console.log("Arduino port: ",port)
+        console.log("ms-arduino port: ",port)
     })
 })
 //}

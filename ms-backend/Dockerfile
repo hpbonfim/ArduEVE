@@ -1,20 +1,10 @@
 #Dockerfile
 FROM node:10.15
 
-# copy package.json to a temporary folder
-ADD package.json /tmp/package.json
-
-# installing the node_modules 
-RUN cd /tmp && npm install --only=production && \
-    npm cache clean --force
-
-# "layer" thats been cached will be used if possible
-RUN mkdir -p /usr/src/ms-backend && cp -a /tmp/node_modules /usr/src/ms-backend
-
-# create a worker folder and add all files to mainwork
+# create a worker folder
 WORKDIR /usr/src/ms-backend
 
-# created a directory and copy all nedded files
+# add all files to mainwork
 ADD . /usr/src/ms-backend
 
 # Entrypoint script

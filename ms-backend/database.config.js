@@ -1,4 +1,2 @@
 
-module.exports = {
-    url: 'mongodb://mongo:27017/ms-database'
-}
+module.exports = { url: 'mongodb://mongo:27017/mongo-database' }

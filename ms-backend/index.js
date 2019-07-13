@@ -1,18 +1,22 @@
 require('dotenv').config({path: __dirname + '/.env'});
 //routes
-const userRoutes = require("./api/routes/user")
+const userRoutes = require('./api/routes/user')
 // Configuring the database
-const bodyParser = require("body-parser")
-const express = require("express")
-const morgan = require("morgan")
+const helmet = require('helmet')
+const bodyParser = require('body-parser')
+const express = require('express')
+const morgan = require('morgan')
 const app = express()
 //http calls
-const database = require("./database.config.js")
-const mongoose = require("mongoose")
-const http = require("http")
-const port = process.env.GATEWAY_PORT || 3000
+const database = require('./database.config.js')
+const mongoose = require('mongoose')
+
+const http = require('http')
+const port = process.env.PORT || 3333
+
 //-------------------------------------------------------------
-app.use(morgan("dev"))
+//app.use(helmet())
+app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({ extended: false }) )// parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.json()) // parse requests of content-type - application/json
 
@@ -20,10 +24,10 @@ app.use(bodyParser.json()) // parse requests of content-type - application/json
 mongoose.Promise = global.Promise
 mongoose.connect(database.url, { useMongoClient: true })
     .then(() => {
-        console.log("conectado com sucesso")
+        console.log('conectado com sucesso!')
     })
   .catch(err => {
-      console.log("Erro ao connectar", err)
+      console.log('Erro?', err)
       process.exit()
     })
 //-------------------------------------------------------------
@@ -39,9 +43,9 @@ app.use((req, res, next) => {
         }
         next()
     })
-
 //-------------------------------------------------------------
 app.use("/user", userRoutes)
+
 //-------------------------------------------------------------
 app.use((req, res, next) => {
     const error = new Error("Não encontrado")
@@ -49,6 +53,7 @@ app.use((req, res, next) => {
     console.log(error)
     next(error)
 })
+
 //-------------------------------------------------------------
 app.use((error, req, res, next) => {
     res.status(error.status || 500)
@@ -57,9 +62,10 @@ app.use((error, req, res, next) => {
         error: { message: error.message }
     })
 })
+
 //-------------------------------------------------------------
 const server = http.createServer(app)
 server.listen(port, () => {
-    console.log("ms-backend server: ", port)
+    console.log("ms-backend port: ", port)
 })
 //-------------------------------------------------------------

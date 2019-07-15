@@ -6,6 +6,8 @@ const cors = require('cors')
 const board = five.Board({repl: false, port: '/dev/rfcomm0'})
 const express = require('express')
 const app = express()
+const moment = require('moment')
+moment.locale('pt-BR');
 
 //---------------------------------------------//
 //module.exports = app => {
@@ -85,24 +87,30 @@ board.on("ready", function() {
         setTimeout(() => {  
             relay1.off();
         }, 700)
-        res.status(200).json({
-            message: new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString()
-        })
+        let data = {
+            status: "OK",
+            message: moment().format('MMMM Do YYYY, h:mm:ss a')
+        }
+        res.status(200).json({ data })
     })
 
 //---------------------- RELAY 2
     app.use('/r2', (req, res, next) => {
         if(!relay2.isOn){
             relay2.on();
-            res.status(200).json({
-                message: "ligado:" + new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString()
-            })
+            let data = {
+                status: relay2.isOn,
+                message: moment().format('MMMM Do YYYY, h:mm:ss a')
+            }
+            res.status(200).json({ data })
         }
         else{
             relay2.off();
-            res.status(200).json({
-                message: "desligado:" + new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString()
-            })
+            let data = {
+                status: relay2.isOn,
+                message: moment().format('MMMM Do YYYY, h:mm:ss a')
+            }
+            res.status(200).json({ data })
         }
     })
 
@@ -110,15 +118,19 @@ board.on("ready", function() {
     app.use('/r3', (req, res, next) => {
         if(!relay3.isOn){
             relay3.on();
-            res.status(200).json({
-                message: "ligado:" + new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString()
-            })
+            let data = {
+                status: relay3.isOn,
+                message: moment().format('MMMM Do YYYY, h:mm:ss a')
+            }
+            res.status(200).json({ data })
         }
         else{
             relay3.off();
-            res.status(200).json({
-                message: "desligado:" + new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString()
-            })
+            let data = {
+                status: relay3.isOn,
+                message: moment().format('MMMM Do YYYY, h:mm:ss a')
+            }
+            res.status(200).json({ data })
         }
     })
 
@@ -126,15 +138,19 @@ board.on("ready", function() {
     app.use('/r4', (req, res, next) => {
         if(!relay4.isOn){
             relay4.on();
-            res.status(200).json({
-                message: "ligado:" + new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString()
-            })
+            let data = {
+                status: relay4.isOn,
+                message:  moment().format('MMMM Do YYYY, h:mm:ss a')
+            }
+            res.status(200).json({ data })
         }
         else{
             relay4.off();
-            res.status(200).json({
-                message: "desligado:" + new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString()
-            })
+            let data = {
+                status: relay4.isOn,
+                message: moment().format('MMMM Do YYYY, h:mm:ss a')
+            }
+            res.status(200).json({ data })
         }
     })
 
@@ -144,9 +160,12 @@ app.use('/photosensor', (req, res) => {
         var snap = photoresistor.on("data", function() {
             // console.log("photosensor: ", new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString(), ">>>", this.value);
         })
-        res.status(200).json({
-            message: snap.value
-        })
+        let data = {
+            status: "OK",
+            value: snap.value,
+            message: moment().format('MMMM Do YYYY, h:mm:ss a')
+        }
+        res.status(200).json({ data })
     }, 1)
 })
 
@@ -156,9 +175,14 @@ app.use('/photosensor', (req, res) => {
             var snap = temperature.on("change", function() {
                 // console.log( new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString(), ">>>", this.celsius + "°C", '\n');
             });
-            res.status(200).json({
-                message: snap.celsius
-            })
+            let data = {
+                status: "OK",
+                celsius: snap.celsius,
+                fahrenheit: snap.fahrenheit,
+                kelvin: snap.kelvin,
+                message: moment().format('MMMM Do YYYY, h:mm:ss a')
+            }
+            res.status(200).json({ data })
         }, 1)
     })
 
@@ -185,9 +209,15 @@ app.use('/photosensor', (req, res) => {
                 // console.log("  meters       : ", this.altimeter.meters);
                 // console.log("--------------------------------------");
             });
-            res.status(200).json({
-                message: { celsius:snap.thermometer.celsius, barometer: snap.barometer.pressure, humidity: snap.barometer.relativeHumidity, altimeter: snap.altimeter.meters }
-            })
+            let data = {
+                status: "OK",
+                celsius: snap.thermometer.celsius,
+                pressure: snap.barometer.pressure,
+                humidity: snap.barometer.relativeHumidity,
+                meters: snap.altimeter.meters,
+                message: moment().format('MMMM Do YYYY, h:mm:ss a')
+            }
+            res.status(200).json({ data })
         }, 1)
     })
 //---------------------- LEDS
@@ -204,15 +234,21 @@ app.use('/photosensor', (req, res) => {
                 GREEN.stop().off();
             });
         }, 700)
-        res.status(200).json({ message: new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString() })
+        let data = {
+            status: "OK" + RED.pin + YELLOW.pin + GREEN.pin, 
+            message: moment().format('MMMM Do YYYY, h:mm:ss a')
+        }
+        res.status(200).json({ data })    
     })
 
 //---------------------- STATUS BOARD
     app.use('/statusBoard', (req, res, next) => {
         setTimeout(() => {  
-            res.status(200).json({
-                message: 'Arduino OK:' + new Date().toLocaleDateString() + " | " + new Date().toLocaleTimeString()
-            })
+            let data = {
+                status: "OK",
+                message: moment().format('MMMM Do YYYY, h:mm:ss a')
+            }
+            res.status(200).json({ data })    
         }, 1)
     })
 

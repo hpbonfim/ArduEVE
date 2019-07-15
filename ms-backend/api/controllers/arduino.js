@@ -1,60 +1,23 @@
 const mongoose = require("mongoose")
-
-const arduinoID = process.env.ARDUINO_ENDPOINT
-const ArduinoSchema = require("../models/arduino")
-const ArduinoLog = mongoose.model('ArduinoLogs', ArduinoSchema)
-
-const portaID = process.env.ARDUINO_ENDPOINT_R1
-const PortaSchema = require("../models/arduino")
-const PortaLog = mongoose.model('PortaLog', PortaSchema)
-
-const ventiladorID = process.env.ARDUINO_ENDPOINT_R2
-const VentiladoSchema = require("../models/arduino")
-const VentiladorLog = mongoose.model('VentiladorLog', VentiladoSchema)
-
-const lampadaID = process.env.ARDUINO_ENDPOINT_R3
-const LampadaSchema = require("../models/arduino")
-const LampadaLog = mongoose.model('LampadaLog', LampadaSchema)
-
-const relay4ID = process.env.ARDUINO_ENDPOINT_R4
-const RelaySchema = require("../models/arduino")
-const RelayLog = mongoose.model('RelayLog', RelaySchema)
-
-const photosensorID = process.env.ARDUINO_ENDPOINT_PS
-const PhotosensorSchema = require("../models/arduino")
-const PhotosensorLog = mongoose.model('PhotosensorLog', PhotosensorSchema)
-
-const lm35ID = process.env.ARDUINO_ENDPOINT_LM
-const LmSchema = require("../models/arduino")
-const LmLog = mongoose.model('LmLog', LmSchema)
-
-const bme280ID = process.env.ARDUINO_ENDPOINT_BM
-const BmSchema = require("../models/arduino")
-const BmLog = mongoose.model('BmLog', BmSchema)
-
-const ledsID = process.env.ARDUINO_ENDPOINT_LD
-const LedSchema = require("../models/arduino")
-const LedLog = mongoose.model('LedLog', LedSchema)
-
 const axios = require('axios')
+const imports = require('../routes/arduino')
+const db = require('../../database.config').db
 
 //---------------------- ARDUINO BOARD
 exports.statusBoard = (req, res, next) => {
-    console.log(arduinoID)
+    console.log(imports.arduinoID)
     setTimeout(() => {
-        axios.get(arduinoID)
+        axios.get(imports.arduinoID)
             .then(result => {
-                console.log(result.data)
-                let log = new ArduinoLog({
+                db.collection('ArduinoLog').add(result.data.data);
+                new imports.ArduinoLog({
                     _id: new mongoose.Types.ObjectId(),
-                    message: result.data
-                })
-                console.log(log)
-                log.save()
+                    data: result.data.data
+                }).save()
                     .then(resp => {
                         console.log(resp);
                         res.status(200).json({
-                            data: result.data
+                            data: result.data.data
                         })
                     })
                     .catch(err => {
@@ -76,29 +39,57 @@ exports.statusBoard = (req, res, next) => {
 //---------------------- RELAY 1
 exports.usarPorta = (req, res, next) => {
     setTimeout(() => {
-        axios.get(portaID)
-            .then(resp => {
-                res.status(200).json({
-                    data: resp.data
+        axios.get(imports.portaID)
+            .then(result => {
+                db.collection('PortaLog').add(result.data.data);
+                new imports.PortaLog({
+                    _id: new mongoose.Types.ObjectId(),
+                    data: result.data.data
+                }).save()
+                    .then(resp => {
+                        console.log(resp);
+                        res.status(200).json({
+                            data: result.data.data
+                        })
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        res.status(500).json({
+                            error: err
+                        })
+                    })
                 })
-            })
-            .catch(err => {
-                console.log(err);
-                res.status(500).json({
-                    error: err
+                .catch(err => {
+                    console.log(err);
+                    res.status(500).json({
+                        error: err
+                    })
                 })
-            })
     },2)
 }
 
 //---------------------- RELAY 2
 exports.usarVentilador = (req, res, next) => {
     setTimeout(() => {
-        axios.get(ventiladorID)
-            .then(resp => {
-                res.status(200).json({
-                    data: resp.data
-                })
+        axios.get(imports.ventiladorID)
+            .then(result => {
+                db.collection('VentiladorLog').add(result.data.data);
+                new imports.VentiladorLog({
+                    _id: new mongoose.Types.ObjectId(),
+                    data: result.data.data
+                }).save()
+                    .then(resp => {
+                        console.log(resp);
+                        res.status(200).json({
+                            data: result.data.data
+                        })
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        res.status(500).json({
+                            error: err
+                        })
+                    })
             })
             .catch(err => {
                 console.log(err);
@@ -112,11 +103,25 @@ exports.usarVentilador = (req, res, next) => {
 //---------------------- RELAY 3
 exports.usarLampada = (req, res, next) => {
     setTimeout(() => {
-        axios.get(lampadaID)
-        .then(resp => {
-            res.status(200).json({
-                data: resp.data
-            })
+        axios.get(imports.lampadaID)
+            .then(result => {
+                db.collection('LampadaLog').add(result.data.data);
+                new imports.LampadaLog({
+                    _id: new mongoose.Types.ObjectId(),
+                    data: result.data.data
+                }).save()
+                    .then(resp => {
+                        console.log(resp);
+                        res.status(200).json({
+                            data: result.data.data
+                        })
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        res.status(500).json({
+                            error: err
+                        })
+                    })
         })
         .catch(err => {
             console.log(err);
@@ -130,17 +135,31 @@ exports.usarLampada = (req, res, next) => {
 //---------------------- RELAY 4
 exports.usarRelay = (req, res, next) => {
     setTimeout(() => {
-        axios.get(relay4ID)
-        .then(resp => {
-            res.status(200).json({
-                data: resp.data
+        axios.get(imports.relay4ID)
+            .then(result => {
+                db.collection('RelayLog').add(result.data.data);
+                new imports.RelayLog({
+                    _id: new mongoose.Types.ObjectId(),
+                    data: result.data.data
+                }).save()
+                    .then(resp => {
+                        console.log(resp);
+                        res.status(200).json({
+                            data: result.data.data
+                        })
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        res.status(500).json({
+                            error: err
+                        })
+                    })
             })
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json({
-                error: err
-            })
+            .catch(err => {
+                console.log(err);
+                res.status(500).json({
+                  error: err
+                })
         })
     },2)
 }
@@ -148,11 +167,25 @@ exports.usarRelay = (req, res, next) => {
 //---------------------- PHOTOSENSOR
 exports.photosensorData = (req, res, next) => {
     setTimeout(() => {
-        axios.get(photosensorID)
-        .then(resp => {
-            res.status(200).json({
-                data: resp.data
-            })
+        axios.get(imports.photosensorID)
+            .then(result => {
+                db.collection('PhotosensorLog').add(result.data.data);
+                new imports.PhotosensorLog({
+                    _id: new mongoose.Types.ObjectId(),
+                    data: result.data.data
+                }).save()
+                    .then(resp => {
+                        console.log(resp);
+                        res.status(200).json({
+                            data: result.data.data
+                        })
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        res.status(500).json({
+                            error: err
+                        })
+                    })
         })
         .catch(err => {
             console.log(err);
@@ -166,11 +199,25 @@ exports.photosensorData = (req, res, next) => {
 //---------------------- LM35
 exports.lm35Data = (req, res, next) => {
     setTimeout(() => {
-        axios.get(lm35ID)
-        .then(resp => {
-            res.status(200).json({
-                data: resp.data
-            })
+        axios.get(imports.lm35ID)
+            .then(result => {
+                db.collection('LmLog').add(result.data.data);
+                new imports.LmLog({
+                    _id: new mongoose.Types.ObjectId(),
+                    data: result.data.data
+                }).save()
+                    .then(resp => {
+                        console.log(resp);
+                        res.status(200).json({
+                            data: result.data.data
+                        })
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        res.status(500).json({
+                            error: err
+                        })
+                    })
         })
         .catch(err => {
             console.log(err);
@@ -184,11 +231,25 @@ exports.lm35Data = (req, res, next) => {
 //---------------------- BME280
 exports.bme280Data = (req, res, next) => {
     setTimeout(() => {
-        axios.get(bme280ID)
-        .then(resp => {
-            res.status(200).json({
-                data: resp.data
-            })
+        axios.get(imports.bme280ID)
+            .then(result => {
+                db.collection('BMData').add(result.data.data);
+                new imports.BmLog({
+                    _id: new mongoose.Types.ObjectId(),
+                    data: result.data.data
+                }).save()
+                    .then(resp => {
+                        console.log(resp);
+                        res.status(200).json({
+                            data: result.data.data
+                        })
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        res.status(500).json({
+                            error: err
+                        })
+                    })
         })
         .catch(err => {
             console.log(err);
@@ -202,11 +263,24 @@ exports.bme280Data = (req, res, next) => {
 //---------------------- LEDS
 exports.usarLeds = (req, res, next) => {
     setTimeout(() => {
-        axios.get(ledsID)
-        .then(resp => {
-            res.status(200).json({
-                data: resp.data
-            })
+        axios.get(imports.ledsID)
+            .then(result => {
+                db.collection('LedLog').add(result.data.data);
+                new imports.LedLog({
+                    _id: new mongoose.Types.ObjectId(),
+                    data: result.data.data
+                }).save()
+                    .then(resp => {
+                        res.status(200).json({
+                            data: result.data.data
+                        })
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        res.status(500).json({
+                            error: err
+                        })
+                    })
         })
         .catch(err => {
             console.log(err);

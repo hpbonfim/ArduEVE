@@ -1,37 +1,38 @@
-require('dotenv').config({path: __dirname + '/.env'});
+//routes
+require('dotenv').config({path: __dirname + '/.env'})
 const userRoutes = require('./api/routes/user')
 const config = require('./database.config.js')
-
-//routes
-const helmet = require('helmet')
-const morgan = require('morgan')
-const bodyParser = require('body-parser')
+// EXPRESS 
 const express = require('express')
 const app = express()
-//http calls
+const bodyParser = require('body-parser')
+const morgan = require('morgan')
+const helmet = require('helmet')
 
-//-------------------------------------------------------------
-app.use(helmet())
+//------------------------------------------------------------- EXPRESS
+app.use(helmet()) // HEAD CRIPTOGHELP
 app.use(morgan('common')) // Concise output colored by response status for development use
-app.use(bodyParser.urlencoded({ extended: false }) )// parse requests of content-type - application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }) ) // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.json()) // parse requests of content-type - application/json
 
-//---------------------------------------------------------
+//--------------------------------------------------------- GET ARDUINO STATUS 
 const axios = require('axios')
 const db = config.db
 
 function sayHiToArduino() {
     axios.get(process.env.ARDUINO_ENDPOINT)
-        .then(result => {
-            db.collection('ArduinoLog').add(result.data);
+    .then(result => {
+        db.collection('ArduinoLog').add(result.data.data)
+        // db.collection('ArduinoLog').doc(String(year)).set(result.data.data)
         })
         .catch(err => {
-            console.log(err);
+            console.log(err)
+            process.exit()
         })
 }
 setTimeout(sayHiToArduino, 5000)
 
-//-------------------------------------------------------------
+//------------------------------------------------------------- MONGOOSE => MONGO
 const mongoose = require('mongoose')
 const link = config.url
 
@@ -46,7 +47,7 @@ mongoose.connect(link, { useMongoClient: true })
       process.exit()
     })
 
-//-------------------------------------------------------------
+//------------------------------------------------------------- CORS API
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*")
     res.header(
@@ -59,9 +60,10 @@ app.use((req, res, next) => {
         }
         next()
     })
-
+//------------------------------------------------------------- TRUE ROUTES
 app.use("/user", userRoutes)
 
+//------------------------------------------------------------- 404 ERROR
 app.use((req, res, next) => {
     const error = new Error("Não encontrado")
     error.status = 404
@@ -69,6 +71,7 @@ app.use((req, res, next) => {
     next(error)
 })
 
+//------------------------------------------------------------- 500 BAD
 app.use((error, req, res, next) => {
     res.status(error.status || 500)
         console.log(error)
@@ -77,7 +80,7 @@ app.use((error, req, res, next) => {
     })
 })
 
-//-------------------------------------------------------------
+//------------------------------------------------------------- SERVER EXPRESS
 const http = require('http')
 const port = process.env.PORT || 3333
 const server = http.createServer(app)
@@ -85,5 +88,3 @@ const server = http.createServer(app)
 server.listen(port, () => {
     console.log("ms-backend port: ", port)
 })
-
-//-------------------------------------------------------------

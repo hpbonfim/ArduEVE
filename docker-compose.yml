@@ -37,7 +37,6 @@ services:
     restart: always
     privileged: true
     depends_on:
-      - ms-arduino
       - mongo-express
       - mongo
     ports:
@@ -93,7 +92,7 @@ services:
       ME_CONFIG_BASICAUTH_PASSWORD: ${DB_KEY}
   
   # microservice para fazer deploy automático para o Firebase(PQ TO COM PREGUIÇA)
-# configuração dos newtworks 
+# configuração dos networks 
 networks:
   frontend:
     driver: bridge

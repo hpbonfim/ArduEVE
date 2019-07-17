@@ -1,4 +1,5 @@
 const port = process.env.PORT || 3332
+require('dotenv').config({path: __dirname + '/.env'});
 const bodyParser = require('body-parser')
 const five = require('johnny-five')
 const helmet = require('helmet')
@@ -13,7 +14,7 @@ moment.locale('pt-BR');
 //module.exports = app => {
     app.use(helmet()) // Ajuda na criptografia de dados
     app.use(cors(
-        { origin: ["http://localhost:3333"],
+        { origin: [process.env.MS_BACKEND],
         methods: ["GET"],
         allowedHeaders: ["Content-Type", "Authorization"] }
         ))
@@ -29,39 +30,39 @@ console.log("Esperando o Arduino ligar...")
 board.on("ready", function() {
     console.log('Arduino OK - datalog:',  new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString());
     //LED VERMELHO,
-        var RED = new five.Led(9);
+    var RED = new five.Led(9);
     //LED AMARELO
-        var YELLOW = new five.Led(10);
+    var YELLOW = new five.Led(10);
     //LED VERDE
-        var GREEN = new five.Led(11);
+    var GREEN = new five.Led(11);
 
     //RELAY 1
-        var relay1 = new five.Relay({
-            type: "NC",
-            pin: 13
-        });
-        relay1.off();
+    var relay1 = new five.Relay({
+        type: "NC",
+        pin: 13
+    });
+    relay1.off();
 
     //RELAY 2
-        var relay2 = new five.Relay({
-            type: "NC",
-            pin: 12
-        });
-        relay2.off();
-        
+    var relay2 = new five.Relay({
+        type: "NC",
+        pin: 12
+    });
+    relay2.off();
+
     //RELAY 3
-        var relay3 = new five.Relay({
-            type: "NC",
-            pin: 7
-        });
-        relay3.off();
-        
+    var relay3 = new five.Relay({
+        type: "NC",
+        pin: 7
+    });
+    relay3.off();
+
     //RELAY 4
-        var relay4 = new five.Relay({
-            type: "NC",
-            pin: 6
-        });
-        relay4.off();
+    var relay4 = new five.Relay({
+        type: "NC",
+        pin: 6
+    });
+    relay4.off();
 
     // BME280 SENSOR TEMPERATURA
     var multi = new five.Multi({
@@ -81,6 +82,7 @@ board.on("ready", function() {
         pin: "A0",
         freq: 1000
     });
+
 //---------------------- RELAY 1
     app.use('/r1', (req, res, next) => {
         relay1.on();
@@ -190,24 +192,24 @@ app.use('/photosensor', (req, res) => {
     app.use('/temp0', (req, res, next) => {
         setTimeout(() => {  
             var snap = multi.on("data", function() {
-                // console.log("Thermometer");
-                // console.log("  celsius      : ", this.thermometer.celsius);
-                // console.log("  fahrenheit   : ", this.thermometer.fahrenheit);
-                // console.log("  kelvin       : ", this.thermometer.kelvin);
-                // console.log("--------------------------------------");
+                console.log("Thermometer");
+                console.log("  celsius      : ", this.thermometer.celsius);
+                console.log("  fahrenheit   : ", this.thermometer.fahrenheit);
+                console.log("  kelvin       : ", this.thermometer.kelvin);
+                console.log("--------------------------------------");
             
-                // console.log("Barometer");
-                // console.log("  pressure     : ", this.barometer.pressure);
-                // console.log("--------------------------------------");
+                console.log("Barometer");
+                console.log("  pressure     : ", this.barometer.pressure);
+                console.log("--------------------------------------");
             
-                // console.log("Hygrometer");
-                // console.log("  humidity     : ", this.hygrometer.relativeHumidity);
-                // console.log("--------------------------------------");
+                console.log("Hygrometer");
+                console.log("  humidity     : ", this.hygrometer.relativeHumidity);
+                console.log("--------------------------------------");
             
-                // console.log("Altimeter");
-                // console.log("  feet         : ", this.altimeter.feet);
-                // console.log("  meters       : ", this.altimeter.meters);
-                // console.log("--------------------------------------");
+                console.log("Altimeter");
+                console.log("  feet         : ", this.altimeter.feet);
+                console.log("  meters       : ", this.altimeter.meters);
+                console.log("--------------------------------------");
             });
             let data = {
                 status: "OK",
@@ -240,6 +242,7 @@ app.use('/photosensor', (req, res) => {
         }
         res.status(200).json({ data })    
     })
+
 
 //---------------------- STATUS BOARD
     app.use('/statusBoard', (req, res, next) => {

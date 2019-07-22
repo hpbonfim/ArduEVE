@@ -134,7 +134,7 @@ export default {
     },
     getUpdateTemperatura () {
       this.axios
-        .post("http://172.12.0.50:3333/user/lm35Data")
+        .post("https://82e2f2d5.ngrok.io/user/lm35Data")
         .then(function(response) {
            
         })
@@ -144,7 +144,7 @@ export default {
     },
     getUpdateHumidade () {
       this.axios
-        .post("http://172.12.0.50:3333/user/bme280Data")
+        .post("https://82e2f2d5.ngrok.io/user/bme280Data")
         .then(function(response) {})
         .catch(function(error) {
           console.log(error);
@@ -152,7 +152,7 @@ export default {
     },
     getUpdateSensorLuz () {
       this.axios
-        .post("http://172.12.0.50:3333/user/photosensorData")
+        .post("https://82e2f2d5.ngrok.io/user/photosensorData")
         .then(function(response) {
           alert("Todos Atualizados até: " + response.data.data.createdAt + "!");
         })

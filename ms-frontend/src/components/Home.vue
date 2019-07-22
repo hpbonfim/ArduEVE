@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     getLeds () {
-      this.axios.post("	http://172.12.0.50:3333/user/leds")
+      this.axios.post("	https://82e2f2d5.ngrok.io/user/leds")
                 .then(function(response) { })
                 .catch(function(error) {
                   console.log(error);
@@ -80,7 +80,7 @@ export default {
     atualizar: function() {
       this.getLeds ()
       this.axios
-        .post("	http://172.12.0.50:3333/user/statusBoard")
+        .post("	https://82e2f2d5.ngrok.io/user/statusBoard")
         .then(function(response) {
           alert("Atualizado: " + response.data.data.createdAt + "!");
         })

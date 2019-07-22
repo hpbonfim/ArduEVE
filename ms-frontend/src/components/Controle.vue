@@ -126,7 +126,7 @@ export default {
   methods: {
     getUpdateLampada () {
       this.axios
-        .post("http://172.12.0.50:3333/user/usarLampada")
+        .post("https://82e2f2d5.ngrok.io/user/usarLampada")
         .then(function(response) { 
             alert("Atualizado: " + response.data.data.createdAt + "!");
         })
@@ -136,7 +136,7 @@ export default {
     },
     getUpdateRelay () {
       this.axios
-        .post("http://172.12.0.50:3333/user/usarRelay")
+        .post("https://82e2f2d5.ngrok.io/user/usarRelay")
         .then(function(response) { 
             alert("Atualizado: " + response.data.data.createdAt + "!");
         })
@@ -146,7 +146,7 @@ export default {
     },
     getUpdateLed () {
       this.axios
-        .post("http://172.12.0.50:3333/user/usarLed")
+        .post("https://82e2f2d5.ngrok.io/user/usarLed")
         .then(function(response) {
             alert("Atualizado: " + response.data.data.createdAt + "!");
          })
@@ -156,7 +156,7 @@ export default {
     },
     getUpdatePorta () {
       this.axios
-        .post("http://172.12.0.50:3333/user/usarPorta")
+        .post("https://82e2f2d5.ngrok.io/user/usarPorta")
         .then(function(response) {
             alert("Atualizado: " + response.data.data.createdAt + "!");
          })

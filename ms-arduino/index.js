@@ -1,34 +1,37 @@
 const port = process.env.PORT || 3332
-require('dotenv').config({path: __dirname + '/.env'});
 const bodyParser = require('body-parser')
 const five = require('johnny-five')
 const helmet = require('helmet')
 const cors = require('cors')
-const board = five.Board({repl: false, port: '/dev/rfcomm0'})
+const board = five.Board({
+    repl: false,
+    port: '/dev/rfcomm3'
+})
 const express = require('express')
 const app = express()
-const moment = require('moment')
-moment.locale('pt-BR');
+
 
 //---------------------------------------------//
 //module.exports = app => {
-    app.use(helmet()) // Ajuda na criptografia de dados
-    app.use(cors(
-        { origin: [process.env.MS_BACKEND],
-        methods: ["GET"],
-        allowedHeaders: ["Content-Type", "Authorization"] }
-        ))
-    app.use(bodyParser.urlencoded({ extended: true }))
-    app.use(bodyParser.json())
-    app.use('/', express.static(`${__dirname}/`)) // set the static files location for the static html
+app.use(helmet()) // Ajuda na criptografia de dados
+app.use(cors({
+    origin: [process.env.MS_BACKEND],
+    methods: ["GET"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}))
+app.use(bodyParser.urlencoded({
+    extended: false
+}))
+app.use(bodyParser.json())
+app.use('/', express.static(`${__dirname}/`)) // set the static files location for the static html
 
-board.on("error", function(err) {
-  console.log("Erro: ", err)
-  process.exit(15)
+board.on("error", function (err) {
+    console.log("Erro: ", err)
+    process.exit(15)
 })
 console.log("Esperando o Arduino ligar...")
-board.on("ready", function() {
-    console.log('Arduino OK - datalog:',  new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString());
+board.on("ready", function () {
+    console.log('Arduino OK - datalog:', new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' }))
     //LED VERMELHO,
     var RED = new five.Led(9);
     //LED AMARELO
@@ -67,7 +70,7 @@ board.on("ready", function() {
     // BME280 SENSOR TEMPERATURA
     var multi = new five.Multi({
         controller: "BME280",
-            freq: 1000
+        freq: 1000
     });
 
     // PHOTORESISTOR SENSOR TEMPERATURA
@@ -83,152 +86,169 @@ board.on("ready", function() {
         freq: 1000
     });
 
-//---------------------- RELAY 1
+    //---------------------- RELAY 1
     app.use('/r1', (req, res, next) => {
-        relay1.on();
-        setTimeout(() => {  
+        if (!relay1.isOn) {
+            relay1.on();
+            let data = {
+                statusValue: "Ligado",
+                createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
+            }
+            res.status(200).json({
+                data
+            })
+        } else {
             relay1.off();
-        }, 700)
-        let data = {
-            status: "OK",
-            message: moment().format('MMMM Do YYYY, h:mm:ss a')
+            let data = {
+                statusValue: "Desligado",
+                createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
+            }
+            res.status(200).json({
+                data
+            })
         }
-        res.status(200).json({ data })
     })
 
-//---------------------- RELAY 2
+    //---------------------- RELAY 2
     app.use('/r2', (req, res, next) => {
-        if(!relay2.isOn){
+        if (!relay2.isOn) {
             relay2.on();
             let data = {
-                status: relay2.isOn,
-                message: moment().format('MMMM Do YYYY, h:mm:ss a')
+                statusValue: "Ligado",
+                createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
             }
-            res.status(200).json({ data })
-        }
-        else{
+            res.status(200).json({
+                data
+            })
+        } else {
             relay2.off();
             let data = {
-                status: relay2.isOn,
-                message: moment().format('MMMM Do YYYY, h:mm:ss a')
+                statusValue: "Desligado",
+                createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
             }
-            res.status(200).json({ data })
+            res.status(200).json({
+                data
+            })
         }
     })
 
-//---------------------- RELAY 3
+    //---------------------- RELAY 3
     app.use('/r3', (req, res, next) => {
-        if(!relay3.isOn){
+        if (!relay3.isOn) {
             relay3.on();
             let data = {
-                status: relay3.isOn,
-                message: moment().format('MMMM Do YYYY, h:mm:ss a')
+                statusValue: "Ligado",
+                createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
             }
-            res.status(200).json({ data })
-        }
-        else{
+            res.status(200).json({
+                data
+            })
+        } else {
             relay3.off();
             let data = {
-                status: relay3.isOn,
-                message: moment().format('MMMM Do YYYY, h:mm:ss a')
+                statusValue: "Desligado",
+                createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
             }
-            res.status(200).json({ data })
+            res.status(200).json({
+                data
+            })
         }
     })
 
-//---------------------- RELAY 4
+    //---------------------- RELAY 4
     app.use('/r4', (req, res, next) => {
-        if(!relay4.isOn){
-            relay4.on();
-            let data = {
-                status: relay4.isOn,
-                message:  moment().format('MMMM Do YYYY, h:mm:ss a')
-            }
-            res.status(200).json({ data })
-        }
-        else{
+        relay4.on();
+        setTimeout(() => {
             relay4.off();
-            let data = {
-                status: relay4.isOn,
-                message: moment().format('MMMM Do YYYY, h:mm:ss a')
-            }
-            res.status(200).json({ data })
+        }, 700)
+        let data = {
+            statusValue: "Liberado",
+            createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
         }
+        res.status(200).json({
+            data
+        })
     })
 
-//---------------------- PHOTOSENSOR
-app.use('/photosensor', (req, res) => {
-    setTimeout(() => {  
-        var snap = photoresistor.on("data", function() {
-            // console.log("photosensor: ", new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString(), ">>>", this.value);
-        })
-        let data = {
-            status: "OK",
-            value: snap.value,
-            message: moment().format('MMMM Do YYYY, h:mm:ss a')
-        }
-        res.status(200).json({ data })
-    }, 1)
-})
-
-//---------------------- LM35
-    app.use('/temp1', (req, res, next) => {
-        setTimeout(() => {  
-            var snap = temperature.on("change", function() {
-                // console.log( new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString(), ">>>", this.celsius + "°C", '\n');
-            });
+    //---------------------- PHOTOSENSOR
+    app.use('/photosensor', (req, res) => {
+        setTimeout(() => {
+            var snap = photoresistor.on("data", function () {
+                // console.log("photosensor: ", new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString(), ">>>", this.value);
+            })
             let data = {
-                status: "OK",
-                celsius: snap.celsius,
-                fahrenheit: snap.fahrenheit,
-                kelvin: snap.kelvin,
-                message: moment().format('MMMM Do YYYY, h:mm:ss a')
+                statusValue: "OK",
+                value: snap.value,
+                createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
             }
-            res.status(200).json({ data })
+            res.status(200).json({
+                data
+            })
         }, 1)
     })
 
-//---------------------- BME280
+    //---------------------- LM35
+    app.use('/temp1', (req, res, next) => {
+        setTimeout(() => {
+            var snap = temperature.on("change", function () {
+                // console.log( new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString(), ">>>", this.celsius + "°C", '\n');
+            });
+            let data = {
+                statusValue: "OK",
+                celsius: snap.celsius,
+                fahrenheit: snap.fahrenheit,
+                kelvin: snap.kelvin,
+                createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
+            }
+            res.status(200).json({
+                data
+            })
+        }, 1)
+    })
+
+    //---------------------- BME280
     app.use('/temp0', (req, res, next) => {
-        setTimeout(() => {  
-            var snap = multi.on("data", function() {
+        setTimeout(() => {
+            var snap = multi.on("data", function () {
                 console.log("Thermometer");
                 console.log("  celsius      : ", this.thermometer.celsius);
                 console.log("  fahrenheit   : ", this.thermometer.fahrenheit);
                 console.log("  kelvin       : ", this.thermometer.kelvin);
                 console.log("--------------------------------------");
-            
+
                 console.log("Barometer");
                 console.log("  pressure     : ", this.barometer.pressure);
                 console.log("--------------------------------------");
-            
+
                 console.log("Hygrometer");
                 console.log("  humidity     : ", this.hygrometer.relativeHumidity);
                 console.log("--------------------------------------");
-            
+
                 console.log("Altimeter");
                 console.log("  feet         : ", this.altimeter.feet);
                 console.log("  meters       : ", this.altimeter.meters);
                 console.log("--------------------------------------");
             });
             let data = {
-                status: "OK",
+                statusValue: "OK",
                 celsius: snap.thermometer.celsius,
                 pressure: snap.barometer.pressure,
-                humidity: snap.barometer.relativeHumidity,
+                relativeHumidity: snap.barometer.relativeHumidity,
                 meters: snap.altimeter.meters,
-                message: moment().format('MMMM Do YYYY, h:mm:ss a')
+                createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
             }
-            res.status(200).json({ data })
+            res.status(200).json({
+                data
+            })
         }, 1)
     })
-//---------------------- LEDS
+    //---------------------- LEDS
     app.use('/leds', (req, res, next) => {
-        setTimeout(() => {  
+        setTimeout(() => {
             RED.on();
             YELLOW.on();
             GREEN.on();
-            this.wait(10000, function() {
+            this.wait(10000, function () {
                 // stop() terminates the interval
                 // off() shuts the led off
                 RED.stop().off();
@@ -237,28 +257,30 @@ app.use('/photosensor', (req, res) => {
             });
         }, 700)
         let data = {
-            status: "OK" + RED.pin + YELLOW.pin + GREEN.pin, 
-            message: moment().format('MMMM Do YYYY, h:mm:ss a')
+            statusValue: "OK",
+            createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
         }
-        res.status(200).json({ data })    
+        res.status(200).json({
+            data
+        })
     })
 
 
-//---------------------- STATUS BOARD
+    //---------------------- STATUS BOARD
     app.use('/statusBoard', (req, res, next) => {
-        setTimeout(() => {  
+        setTimeout(() => {
             let data = {
-                status: "OK",
-                message: moment().format('MMMM Do YYYY, h:mm:ss a')
+                statusValue: "Online xD",
+                createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
             }
-            res.status(200).json({ data })    
+            res.status(200).json({
+                data
+            })
         }, 1)
     })
 
-    app.listen(port, function() {
-        console.log("ms-arduino port: ",port)
+    app.listen(port, function () {
+        console.log("ms-arduino port: ", port)
     })
 })
-//}
-
 //---------------------------------------------//

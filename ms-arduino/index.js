@@ -5,7 +5,7 @@ const helmet = require('helmet')
 const cors = require('cors')
 const board = five.Board({
     repl: false,
-    port: '/dev/rfcomm3'
+    port: '/dev/rfcomm0'
 })
 const express = require('express')
 const app = express()
@@ -162,7 +162,7 @@ board.on("ready", function () {
             relay4.off();
         }, 700)
         let data = {
-            statusValue: "Liberado",
+            statusValue: "OK",
             createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
         }
         res.status(200).json({
@@ -270,7 +270,7 @@ board.on("ready", function () {
     app.use('/statusBoard', (req, res, next) => {
         setTimeout(() => {
             let data = {
-                statusValue: "Online xD",
+                statusValue: "Online o/",
                 createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
             }
             res.status(200).json({

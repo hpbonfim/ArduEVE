@@ -57,7 +57,7 @@ export default {
         case 0:
           return "gray";
         case 1:
-          return "blue";
+          return "teal";
         case 2:
           return "black";
       }

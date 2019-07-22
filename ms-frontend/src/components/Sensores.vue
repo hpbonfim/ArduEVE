@@ -135,9 +135,7 @@ export default {
     getUpdateTemperatura () {
       this.axios
         .post("http://172.12.0.50:3333/user/lm35Data")
-        .then(function(response) {
-           
-        })
+        .then(function(response) {})
         .catch(function(error) {
           console.log(error);
         });

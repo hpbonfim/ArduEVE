@@ -14,10 +14,14 @@ app.use(cors()); // CORS middleware
 app.use(helmet());
 app.use(cookieParser());
 app.use(bodyParser.json()); // parse requests of content-type - application/json
-app.use(bodyParser.urlencoded({ extended: false })); // parse requests of content-type - application/x-www-form-urlencoded
+app.use(
+  bodyParser.urlencoded({
+    extended: false
+  })
+); // parse requests of content-type - application/x-www-form-urlencoded
 app.use("/", express.static(`${__dirname}/dist`)); // set the static files location for the static html
 app.use("/", router); // run all config and express on "/"
 
 const server = http.createServer(app);
 server.listen(PORT);
-console.log(`pet_porta running on :${PORT}`);
+console.log(`ms-frontend port:${PORT}`);

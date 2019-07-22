@@ -1,6 +1,5 @@
 version: "3.5"
 services:
-  
   # Portainer para gerenciar os Dockerfiles
   portainer:
     image: portainer/portainer:latest
@@ -21,14 +20,14 @@ services:
     restart: always
     privileged: true
     devices:
-    - /dev:/dev
+      - /dev:/dev
     ports:
       - ${PORT_MS_ARDUINO}
     networks:
       backend:
         ipv4_address: ${IP_MS_ARDUINO}
     entrypoint:
-    - "/usr/local/bin/docker-entrypoint.sh"
+      - "/usr/local/bin/docker-entrypoint.sh"
 
   # microservice para controlar o BackEnd (NODEJS)
   ms-backend:
@@ -36,18 +35,15 @@ services:
     container_name: ms-backend #image: hpbonfim/ardueve-microservice-backend:latest
     restart: always
     privileged: true
-    depends_on:
-      - mongo-express
-      - mongo
     ports:
       - ${PORT_MS_BACKEND}
     networks:
       backend:
         ipv4_address: ${IP_MS_BACKEND}
     entrypoint:
-    - '/usr/local/bin/docker-entrypoint.sh'
+      - '/usr/local/bin/docker-entrypoint.sh'
 
-  # microservice para controlar o FrontEnd (VUE)
+  # # microservice para controlar o FrontEnd (VUE)
   ms-frontend:
     build: "./ms-frontend/"
     container_name: ms-frontend #image: hpbonfim/ardueve-microservice-frontend:latest
@@ -55,43 +51,27 @@ services:
     depends_on:
       - ms-backend
     ports:
-    - ${PORT_MS_FRONTEND}
+      - ${PORT_MS_FRONTEND}
     networks:
       frontend: 
         ipv4_address: ${NET_IP_FRONTEND}
       backend:
         ipv4_address: ${IP_MS_FRONTEND}
-
-  # microservice para controlar o Banco de Dados (MONGOOSE)
-  mongo:
-    image: mongo:latest
-    container_name: mongo
-    restart: always
-    command: --smallfiles
-    volumes:
-    - mongo-database:/data
-    networks:
-    - backend
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: ${DB_GUY}
-    #   MONGO_INITDB_ROOT_PASSWORD: ${DB_SUPERKEY}
-
-  # mongo-express para controle do mongo
-  mongo-express:
-    image: mongo-express:latest
-    container_name: mongo-board
-    restart: always
-    depends_on:
-    - mongo
-    ports:
-    - ${DB_PORT}
-    networks:
-    - backend
-    environment:
-      ME_CONFIG_BASICAUTH_USERNAME: ${DB_ADMIN}
-      ME_CONFIG_BASICAUTH_PASSWORD: ${DB_KEY}
   
+  # service para expor o backend para o Google Cloud Services via HTTPS
+  ngrok:
+    container_name: ngrok
+    image: wernight/ngrok
+    restart: always
+    command: ngrok http ms-backend:3333 -authtoken=${NGROK_AUTH}
+    networks:
+     backend:
+        ipv4_address: ${IP_MS_NGROK}
+    ports:
+      - ${PORT_MS_NGROK}
+
   # microservice para fazer deploy automático para o Firebase(PQ TO COM PREGUIÇA)
+
 # configuração dos networks 
 networks:
   frontend:
@@ -109,5 +89,4 @@ networks:
       - subnet: ${SUBNET_BACKEND}
 
 volumes:
-  mongo-database:
   portainer-data:

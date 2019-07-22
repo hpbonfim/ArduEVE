@@ -1,20 +1,15 @@
 const ArduinoController = require('../controllers/arduino')
-const checkAuth = require('../middleware/check-auth')
-const UserController = require('../controllers/user')
 const express = require("express")
 const router = express.Router()
 
-router.post("/usarPorta", ArduinoController.usarPorta)
-router.post("/usarVentilador", ArduinoController.usarVentilador)
+router.post("/statusBoard", ArduinoController.statusBoard)
 router.post("/usarLampada", ArduinoController.usarLampada)
 router.post("/usarRelay", ArduinoController.usarRelay)
+router.post("/usarLed", ArduinoController.usarLed)
+router.post("/usarPorta", ArduinoController.usarPorta)
 router.post("/photosensorData", ArduinoController.photosensorData)
 router.post("/lm35Data", ArduinoController.lm35Data)
 router.post("/bme280Data", ArduinoController.bme280Data)
 router.post("/leds", ArduinoController.usarLeds)
-router.post("/statusBoard", ArduinoController.statusBoard)
-//router.delete("/:userId", checkAuth, UserController.user_delete)
-router.post("/login", UserController.user_login)
-router.post("/register", UserController.user_register)
 
 module.exports = router

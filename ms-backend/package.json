@@ -10,18 +10,12 @@
   "license": "Mozilla Public License 2.0",
   "dependencies": {
     "axios": "^0.18.0",
-    "bcrypt": "^3.0.6",
-    "bluebird": "^3.5.3",
     "body-parser": "^1.18.2",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
-    "express-jwt": "^5.3.1",
     "firebase-admin": "^8.2.0",
     "helmet": "^3.18.0",
-    "jsonwebtoken": "^8.5.0",
-    "moment": "^2.24.0",
-    "mongoose": "^4.13.5",
     "morgan": "^1.9.0"
   }
 }

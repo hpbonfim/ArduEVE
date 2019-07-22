@@ -7,4 +7,4 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-module.exports = { url: 'mongodb://mongo:27017/mongo-database', db } 
+module.exports = { db }  

@@ -1,4 +1,5 @@
-const port = process.env.PORT || 3332
+//---------------------------------------------//  "MATERIAIS NECESSÁRIOS PARA ESCREVER UMA REDAÇÃO"
+const port = process.env.PORT
 const bodyParser = require('body-parser')
 const five = require('johnny-five')
 const helmet = require('helmet')
@@ -11,81 +12,83 @@ const express = require('express')
 const app = express()
 
 
-//---------------------------------------------//
-//module.exports = app => {
+//---------------------------------------------//  "TIPO DO PAPEL" E "CABEÇARIO DA REDAÇÃO"
 app.use(helmet()) // Ajuda na criptografia de dados
 app.use(cors({
     origin: [process.env.MS_BACKEND],
     methods: ["GET"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }))
-app.use(bodyParser.urlencoded({
-    extended: false
-}))
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use('/', express.static(`${__dirname}/`)) // set the static files location for the static html
 
+//---------------------------------------------// "CORPO DA REDAÇÃO" INICIO
 board.on("error", function (err) {
     console.log("Erro: ", err)
     process.exit(15)
 })
+
 console.log("Esperando o Arduino ligar...")
+
 board.on("ready", function () {
-    console.log('Arduino OK - datalog:', new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' }))
-    //LED VERMELHO,
+    console.log('ms-arduino OK - datalog:', new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' }))
+    /*
+    LED VERMELHO ESTÁ NO 9
+    LED AMARELO ESTÁ NO 10
+    LED VERDE ESTÁ NO 11
+    */
     var RED = new five.Led(9);
-    //LED AMARELO
     var YELLOW = new five.Led(10);
-    //LED VERDE
     var GREEN = new five.Led(11);
 
-    //RELAY 1
+    //RELAY 1 ESTÁ NO 13
     var relay1 = new five.Relay({
         type: "NC",
         pin: 13
     });
     relay1.off();
 
-    //RELAY 2
+    //RELAY 2 ESTÁ NO 12
     var relay2 = new five.Relay({
         type: "NC",
         pin: 12
     });
     relay2.off();
 
-    //RELAY 3
+    //RELAY 3 ESTÁ NO 7
     var relay3 = new five.Relay({
         type: "NC",
         pin: 7
     });
     relay3.off();
 
-    //RELAY 4
+    //RELAY 4 ESTÁ NO 6
     var relay4 = new five.Relay({
         type: "NC",
         pin: 6
     });
     relay4.off();
 
-    // BME280 SENSOR TEMPERATURA
+    // BME280 - SENSOR TEMPERATURA ESTÁ NO A04 & A05
     var multi = new five.Multi({
         controller: "BME280",
         freq: 1000
     });
 
-    // PHOTORESISTOR SENSOR TEMPERATURA
+    // PHOTORESISTOR SENSOR LUZ ESTÁ NO A01
     var photoresistor = new five.Sensor({
         pin: "A1",
         freq: 1000
     });
 
-    // LM35 SENSOR TEMPERATURA
+    // LM35 SENSOR TEMPERATURA ESTÁ NO A00
     var temperature = new five.Thermometer({
         controller: "LM35",
         pin: "A0",
         freq: 1000
     });
-
+    //---------------------------------------------// "CORPO DA REDAÇÃO" MEIO
     //---------------------- RELAY 1
     app.use('/r1', (req, res, next) => {
         if (!relay1.isOn) {
@@ -242,6 +245,7 @@ board.on("ready", function () {
             })
         }, 1)
     })
+
     //---------------------- LEDS
     app.use('/leds', (req, res, next) => {
         setTimeout(() => {
@@ -265,7 +269,6 @@ board.on("ready", function () {
         })
     })
 
-
     //---------------------- STATUS BOARD
     app.use('/statusBoard', (req, res, next) => {
         setTimeout(() => {
@@ -278,9 +281,10 @@ board.on("ready", function () {
             })
         }, 1)
     })
-
+   
+    //---------------------------------------------// "CORPO DA REDAÇÃO" FIM
     app.listen(port, function () {
         console.log("ms-arduino port: ", port)
     })
 })
-//---------------------------------------------//
+//---------------------------------------------// "FIM DO PAPEL"

@@ -1,26 +1,22 @@
-//routes
-require('dotenv').config({
-    path: __dirname + '/.env'
-})
+//---------------------------------------------//  "MATERIAIS NECESSÁRIOS PARA CRIAR UMA MUSICA E FICAR FAMOSO NO YOUTUBE"
+require('dotenv').config({ path: __dirname + '/.env' })
 const userRoutes = require('./api/routes/user')
 const config = require('./database.config.js')
-// EXPRESS 
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const helmet = require('helmet')
-const imports = require('../ms-backend/api/routes/arduino')
 
-//------------------------------------------------------------- EXPRESS
-app.use(helmet()) // HEAD CRIPTOGHELP
+//---------------------------------------------//  "TIPO DO PAPEL" E "CABEÇARIO DA REDAÇÃO"
+app.use(helmet()) // HEAD CRIPTOHELP
 app.use(morgan('common')) // Concise output colored by response status for development use
-app.use(bodyParser.urlencoded({
-    extended: false
-})) // parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.json()) // parse requests of content-type - application/json
+app.use(bodyParser.urlencoded({ extended: false })) // content-type - application/x-www-form-urlencoded
+app.use(bodyParser.json()) // content-type - application/json
 
-//--------------------------------------------------------- GET ARDUINO STATUS 
+//---------------------------------------------// "FRASE 1" INICIO
+//----------------------- GET ARDUINO STATUS 
+const imports = require('../ms-backend/api/routes/arduino')
 const axios = require('axios')
 const db = config.db
 setTimeout(() => {
@@ -33,7 +29,9 @@ setTimeout(() => {
             console.log(err);
         })
 }, 10000)
-//------------------------------------------------------------- CORS API
+
+//---------------------------------------------// "FRASE 2" REFRÃO
+//------------------------------------- CORS API
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*")
     res.header(
@@ -46,10 +44,13 @@ app.use((req, res, next) => {
     }
     next()
 })
-//------------------------------------------------------------- TRUE ROUTES
+
+//---------------------------------------------// "FRASE 3" MELHOR PARTE DA MÚSICA
+//---------------------------------- TRUE ROUTES
 app.use("/user", userRoutes)
 
-//------------------------------------------------------------- 404 ERROR
+//---------------------------------------------// "FRASE 4" CANTANDO MÚSICA Q Ñ EXISTE
+//------------------------------------ 404 ERROR
 app.use((req, res, next) => {
     const error = new Error("Não encontrado")
     error.status = 404
@@ -57,7 +58,8 @@ app.use((req, res, next) => {
     next(error)
 })
 
-//------------------------------------------------------------- 500 BAD
+//---------------------------------------------// "FRASE 5" PIOR PARTE DA MÚSICA
+//------------------------------------ 500 BAD
 app.use((error, req, res, next) => {
     res.status(error.status || 500)
     console.log(error)
@@ -68,11 +70,13 @@ app.use((error, req, res, next) => {
     })
 })
 
-//------------------------------------------------------------- SERVER EXPRESS
+//---------------------------------------------// GRAVAÇÃO DA MÚSICA E POSTAGEM NO YOUTUBE
+//------------------------------------- SERVER
 const http = require('http')
-const port = process.env.PORT || 3333
+const port = process.env.PORT
 const server = http.createServer(app)
 
 server.listen(port, () => {
     console.log("ms-backend port: ", port)
 })
+//---------------------------------------------// FICAR FAMOSO() = FAMA ? TRUE:FALSE

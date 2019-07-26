@@ -63,7 +63,7 @@ services:
     container_name: ngrok
     image: wernight/ngrok
     restart: always
-    command: ngrok http ms-backend:3333 -authtoken=${NGROK_AUTH}
+    command: ngrok http ms-backend:${BACKEND_PORT} -authtoken=${NGROK_AUTH}
     networks:
      backend:
         ipv4_address: ${IP_MS_NGROK}
@@ -71,7 +71,7 @@ services:
       - ${PORT_MS_NGROK}
 
   # microservice para fazer deploy automático para o Firebase(PQ TO COM PREGUIÇA)
-
+   
 # configuração dos networks 
 networks:
   frontend:
@@ -83,6 +83,7 @@ networks:
 
   backend:
     driver: bridge
+    #internal: true
     ipam:
       driver: default
       config:

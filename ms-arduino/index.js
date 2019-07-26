@@ -1,5 +1,5 @@
 //---------------------------------------------//  "MATERIAIS NECESSÁRIOS PARA ESCREVER UMA REDAÇÃO"
-const port = process.env.PORT
+const port = process.env.PORT || 3332
 const bodyParser = require('body-parser')
 const five = require('johnny-five')
 const helmet = require('helmet')

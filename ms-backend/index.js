@@ -73,7 +73,7 @@ app.use((error, req, res, next) => {
 //---------------------------------------------// GRAVAÇÃO DA MÚSICA E POSTAGEM NO YOUTUBE
 //------------------------------------- SERVER
 const http = require('http')
-const port = process.env.PORT
+const port = process.env.PORT || 3333
 const server = http.createServer(app)
 
 server.listen(port, () => {

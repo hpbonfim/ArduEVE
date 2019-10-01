@@ -17,7 +17,7 @@ services:
   ms-arduino:
     build: "./ms-arduino/"
     container_name: ms-arduino #image: hpbonfim/ardueve-microservice-arduino:latest
-    restart: always
+    #restart: always
     privileged: true
     devices:
       - /dev:/dev

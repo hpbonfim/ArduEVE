@@ -1,4 +1,3 @@
-//---------------------------------------------//  "MATERIAIS NECESSÁRIOS PARA ESCREVER UMA REDAÇÃO"
 const port = process.env.PORT || 3332
 const bodyParser = require('body-parser')
 const five = require('johnny-five')
@@ -12,7 +11,6 @@ const express = require('express')
 const app = express()
 
 
-//---------------------------------------------//  "TIPO DO PAPEL" E "CABEÇARIO DA REDAÇÃO"
 app.use(helmet()) // Ajuda na criptografia de dados
 app.use(cors({
     origin: [process.env.MS_BACKEND],
@@ -23,11 +21,11 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use('/', express.static(`${__dirname}/`)) // set the static files location for the static html
 
-//---------------------------------------------// "CORPO DA REDAÇÃO" INICIO
-board.on("error", function (err) {
-    console.log("Erro: ", err)
-    process.exit(15)
-})
+try{ 
+    board.on("error", function (err) {
+        console.log("Erro: O Arduino não está conectado... LOG: ", err)
+        process.exit(15)
+    })
 
 console.log("Esperando o Arduino ligar...")
 
@@ -88,7 +86,6 @@ board.on("ready", function () {
         pin: "A0",
         freq: 1000
     });
-    //---------------------------------------------// "CORPO DA REDAÇÃO" MEIO
     //---------------------- RELAY 1
     app.use('/r1', (req, res, next) => {
         if (!relay1.isOn) {
@@ -282,9 +279,12 @@ board.on("ready", function () {
         }, 1)
     })
    
-    //---------------------------------------------// "CORPO DA REDAÇÃO" FIM
     app.listen(port, function () {
         console.log("ms-arduino port: ", port)
     })
 })
-//---------------------------------------------// "FIM DO PAPEL"
+}
+catch (error) {
+    console.log(error);
+    process.exit();
+}

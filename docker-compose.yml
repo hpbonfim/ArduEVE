@@ -3,91 +3,45 @@ services:
   # Portainer para gerenciar os Dockerfiles
   portainer:
     image: portainer/portainer:latest
-    container_name: portainer
-    restart: always
     ports:
-    - ${PORTAINER_PORT}
+      - "9000:9000"
     networks:
-    - backend
+     - frontend
+     - backend
     volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
-    - portainer-data:/data
+     - /var/run/docker.sock:/var/run/docker.sock
+     - portainer-data:/data
     
-  # microservice para controlar o Arduino
-  ms-arduino:
-    build: "./ms-arduino/"
-    container_name: ms-arduino #image: hpbonfim/ardueve-microservice-arduino:latest
-    #restart: always
-    privileged: true
-    devices:
-      - /dev:/dev
-    ports:
-      - ${PORT_MS_ARDUINO}
-    networks:
-      backend:
-        ipv4_address: ${IP_MS_ARDUINO}
-    entrypoint:
-      - "/usr/local/bin/docker-entrypoint.sh"
-
   # microservice para controlar o BackEnd (NODEJS)
   ms-backend:
-    build: "./ms-backend/"
-    container_name: ms-backend #image: hpbonfim/ardueve-microservice-backend:latest
-    restart: always
-    privileged: true
+    image: 750937976472.dkr.ecr.sa-east-1.amazonaws.com/ms-backend:latest
+    depends_on:
+      - ms-backend
     ports:
-      - ${PORT_MS_BACKEND}
+      - "3333:3333"
     networks:
-      backend:
-        ipv4_address: ${IP_MS_BACKEND}
+      - frontend
+      - backend
     entrypoint:
       - '/usr/local/bin/docker-entrypoint.sh'
 
   # # microservice para controlar o FrontEnd (VUE)
   ms-frontend:
-    build: "./ms-frontend/"
-    container_name: ms-frontend #image: hpbonfim/ardueve-microservice-frontend:latest
-    restart: always
+    image: 750937976472.dkr.ecr.sa-east-1.amazonaws.com/ms-frontend:latest
     depends_on:
       - ms-backend
     ports:
-      - ${PORT_MS_FRONTEND}
+      - "80:80"
     networks:
-      frontend: 
-        ipv4_address: ${NET_IP_FRONTEND}
-      backend:
-        ipv4_address: ${IP_MS_FRONTEND}
+      - frontend
+      - backend
   
-  # service para expor o backend para o Google Cloud Services via HTTPS
-  ngrok:
-    container_name: ngrok
-    image: wernight/ngrok
-    restart: always
-    command: ngrok http ms-backend:${BACKEND_PORT} -authtoken=${NGROK_AUTH}
-    networks:
-     backend:
-        ipv4_address: ${IP_MS_NGROK}
-    ports:
-      - ${PORT_MS_NGROK}
-
   # microservice para fazer deploy automático para o Firebase(PQ TO COM PREGUIÇA)
    
 # configuração dos networks 
 networks:
   frontend:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-      - subnet: ${SUBNET_FRONTEND}
-
   backend:
-    driver: bridge
-    #internal: true
-    ipam:
-      driver: default
-      config:
-      - subnet: ${SUBNET_BACKEND}
 
 volumes:
   portainer-data:

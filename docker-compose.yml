@@ -6,42 +6,47 @@ services:
     ports:
       - "9000:9000"
     networks:
-     - frontend
      - backend
     volumes:
      - /var/run/docker.sock:/var/run/docker.sock
      - portainer-data:/data
     
-  # microservice para controlar o BackEnd (NODEJS)
-  ms-backend:
-    image: 750937976472.dkr.ecr.sa-east-1.amazonaws.com/ms-backend:latest
-    depends_on:
-      - ms-backend
-    ports:
-      - "3333:3333"
-    networks:
-      - frontend
-      - backend
+  # microservice para controlar o Arduino
+  ms-arduino:
+    image: 750937976472.dkr.ecr.sa-east-1.amazonaws.com/ms-arduino:latest
+    privileged: true
     entrypoint:
-      - '/usr/local/bin/docker-entrypoint.sh'
-
-  # # microservice para controlar o FrontEnd (VUE)
-  ms-frontend:
-    image: 750937976472.dkr.ecr.sa-east-1.amazonaws.com/ms-frontend:latest
-    depends_on:
-      - ms-backend
+      - "/usr/local/bin/docker-entrypoint.sh"
+    devices:
+      - /dev:/dev
     ports:
-      - "80:80"
+      - 3332:3332
     networks:
-      - frontend
-      - backend
-  
+      backend:
+        ipv4_address: 172.12.0.32
+
+  # service para expor o arduino para o Google Cloud Services via HTTPS
+  ngrok:
+    container_name: ngrok
+    image: wernight/ngrok
+    restart: always
+    command: ngrok http ms-arduino:3332 -authtoken=1Rc6ax7n6Et2FXCNG2a2IexNPmc_5aBurCu4A4BxvFoMopboT
+    networks:
+     backend:
+        ipv4_address: 172.12.0.40
+    ports:
+      - 4040:4040
+
   # microservice para fazer deploy automático para o Firebase(PQ TO COM PREGUIÇA)
    
 # configuração dos networks 
 networks:
-  frontend:
   backend:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.12.0.0/24
 
 volumes:
   portainer-data:

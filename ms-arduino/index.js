@@ -21,10 +21,10 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use('/', express.static(`${__dirname}/`)) // set the static files location for the static html
 
-try{ 
+try { 
     board.on("error", function (err) {
         console.log("Erro: O Arduino não está conectado... LOG: ", err)
-        process.exit(15)
+        throw err
     })
 
 console.log("Esperando o Arduino ligar...")
@@ -45,14 +45,14 @@ board.on("ready", function () {
         type: "NC",
         pin: 13
     });
-    relay1.off();
+    relay1.off()
 
     //RELAY 2 ESTÁ NO 12
     var relay2 = new five.Relay({
         type: "NC",
         pin: 12
     });
-    relay2.off();
+    relay2.off()
 
     //RELAY 3 ESTÁ NO 7
     var relay3 = new five.Relay({
@@ -66,7 +66,7 @@ board.on("ready", function () {
         type: "NC",
         pin: 6
     });
-    relay4.off();
+    relay4.off()
 
     // BME280 - SENSOR TEMPERATURA ESTÁ NO A04 & A05
     var multi = new five.Multi({
@@ -89,7 +89,8 @@ board.on("ready", function () {
     //---------------------- RELAY 1
     app.use('/r1', (req, res, next) => {
         if (!relay1.isOn) {
-            relay1.on();
+            relay1.on()
+            
             let data = {
                 statusValue: "Ligado",
                 createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
@@ -98,7 +99,8 @@ board.on("ready", function () {
                 data
             })
         } else {
-            relay1.off();
+            relay1.off()
+            
             let data = {
                 statusValue: "Desligado",
                 createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
@@ -112,7 +114,8 @@ board.on("ready", function () {
     //---------------------- RELAY 2
     app.use('/r2', (req, res, next) => {
         if (!relay2.isOn) {
-            relay2.on();
+            relay2.on()
+            
             let data = {
                 statusValue: "Ligado",
                 createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
@@ -121,7 +124,8 @@ board.on("ready", function () {
                 data
             })
         } else {
-            relay2.off();
+            relay2.off()
+            
             let data = {
                 statusValue: "Desligado",
                 createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
@@ -135,7 +139,8 @@ board.on("ready", function () {
     //---------------------- RELAY 3
     app.use('/r3', (req, res, next) => {
         if (!relay3.isOn) {
-            relay3.on();
+            relay3.on()
+            
             let data = {
                 statusValue: "Ligado",
                 createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
@@ -144,7 +149,8 @@ board.on("ready", function () {
                 data
             })
         } else {
-            relay3.off();
+            relay3.off()
+            
             let data = {
                 statusValue: "Desligado",
                 createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
@@ -161,6 +167,7 @@ board.on("ready", function () {
         setTimeout(() => {
             relay4.off();
         }, 700)
+
         let data = {
             statusValue: "OK",
             createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
@@ -176,6 +183,7 @@ board.on("ready", function () {
             var snap = photoresistor.on("data", function () {
                 // console.log("photosensor: ", new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString(), ">>>", this.value);
             })
+
             let data = {
                 statusValue: "OK",
                 value: snap.value,
@@ -192,7 +200,8 @@ board.on("ready", function () {
         setTimeout(() => {
             var snap = temperature.on("change", function () {
                 // console.log( new Date().toLocaleDateString(), " | ", new Date().toLocaleTimeString(), ">>>", this.celsius + "°C", '\n');
-            });
+            })
+
             let data = {
                 statusValue: "OK",
                 celsius: snap.celsius,
@@ -257,6 +266,7 @@ board.on("ready", function () {
                 GREEN.stop().off();
             });
         }, 700)
+
         let data = {
             statusValue: "OK",
             createdAt: new Date().toLocaleString('pt-BR', { timeZone: 'America/Campo_Grande' })
@@ -285,6 +295,6 @@ board.on("ready", function () {
 })
 }
 catch (error) {
-    console.log(error);
-    process.exit();
+    console.log(error)
+    throw error
 }

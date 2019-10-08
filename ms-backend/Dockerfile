@@ -1,5 +1,5 @@
 #Dockerfile
-FROM node:10.15
+FROM node:10-slim
 
 # create a worker folder
 WORKDIR /usr/src/ms-backend

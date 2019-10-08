@@ -1,18 +1,7 @@
-#Dockerfile
-FROM node:10.15
-
-# create a worker folder
+FROM node:10-slim
 WORKDIR /usr/src/ms-arduino
-
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
 COPY package*.json ./
-
-# If you are building your code for production
 RUN npm ci --only=production
-
-# Bundle app source
 COPY . .
 
 # Inject entrypoint script to docker location

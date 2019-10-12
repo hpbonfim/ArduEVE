@@ -70,15 +70,16 @@ export default {
     };
   },
   methods: {
-    getLeds () {
-      this.axios.post("	http://172.12.0.50:3333/user/leds")
-                .then(function(response) { })
-                .catch(function(error) {
-                  console.log(error);
-                });
+    getLeds() {
+      this.axios
+        .post("	http://172.12.0.50:3333/user/leds")
+        .then(function(response) {})
+        .catch(function(error) {
+          console.log(error);
+        });
     },
     atualizar: function() {
-      this.getLeds ()
+      this.getLeds();
       this.axios
         .post("	http://172.12.0.50:3333/user/statusBoard")
         .then(function(response) {
@@ -87,7 +88,7 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
-       }
+    }
   }
 };
 </script>

@@ -22,7 +22,7 @@
                     </v-list-tile-title>
                     <v-list-tile-sub-title>
                       Última Atualização:
-                     <div class="a">{{ statusLampada.createdAt }}</div>
+                      <div class="a">{{ statusLampada.createdAt }}</div>
                     </v-list-tile-sub-title>
                   </v-list-tile-content>
                 </v-list-tile>
@@ -67,7 +67,7 @@
                     </v-list-tile-title>
                     <v-list-tile-sub-title>
                       Última Atualização:
-                     <div class="a">{{ statusLed.createdAt }}</div>
+                      <div class="a">{{ statusLed.createdAt }}</div>
                     </v-list-tile-sub-title>
                   </v-list-tile-content>
                 </v-list-tile>
@@ -122,44 +122,44 @@ export default {
       statusLed: db.collection("LedLog").doc("log"),
       statusPorta: db.collection("PortaLog").doc("log")
     };
-  }, 
+  },
   methods: {
-    getUpdateLampada () {
+    getUpdateLampada() {
       this.axios
         .post("http://172.12.0.50:3333/user/usarLampada")
-        .then(function(response) { 
-            alert("Atualizado: " + response.data.data.createdAt + "!");
+        .then(function(response) {
+          alert("Atualizado: " + response.data.data.createdAt + "!");
         })
         .catch(function(error) {
           console.log(error);
         });
     },
-    getUpdateRelay () {
+    getUpdateRelay() {
       this.axios
         .post("http://172.12.0.50:3333/user/usarRelay")
-        .then(function(response) { 
-            alert("Atualizado: " + response.data.data.createdAt + "!");
+        .then(function(response) {
+          alert("Atualizado: " + response.data.data.createdAt + "!");
         })
         .catch(function(error) {
           console.log(error);
         });
     },
-    getUpdateLed () {
+    getUpdateLed() {
       this.axios
         .post("http://172.12.0.50:3333/user/usarLed")
         .then(function(response) {
-            alert("Atualizado: " + response.data.data.createdAt + "!");
-         })
+          alert("Atualizado: " + response.data.data.createdAt + "!");
+        })
         .catch(function(error) {
           console.log(error);
         });
     },
-    getUpdatePorta () {
+    getUpdatePorta() {
       this.axios
         .post("http://172.12.0.50:3333/user/usarPorta")
         .then(function(response) {
-            alert("Atualizado: " + response.data.data.createdAt + "!");
-         })
+          alert("Atualizado: " + response.data.data.createdAt + "!");
+        })
         .catch(function(error) {
           console.log(error);
         });

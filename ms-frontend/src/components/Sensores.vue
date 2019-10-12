@@ -63,7 +63,7 @@
                     </v-list-tile-title>
                     <v-list-tile-sub-title>
                       Última Atualização:
-                      <div class="a">{{ statusHumidadePressao.createdAt  }}</div>
+                      <div class="a">{{ statusHumidadePressao.createdAt }}</div>
                     </v-list-tile-sub-title>
                   </v-list-tile-content>
                 </v-list-tile>
@@ -93,14 +93,9 @@
               </v-list>
             </v-card>
           </v-container>
-              <v-btn
-                color="blue"
-                dark
-                center
-                fab @click="getTodosUpdates"
-              >
-                <v-icon>refresh</v-icon>
-              </v-btn>
+          <v-btn color="blue" dark center fab @click="getTodosUpdates">
+            <v-icon>refresh</v-icon>
+          </v-btn>
         </v-content>
       </v-layout>
     </v-responsive>
@@ -118,21 +113,21 @@ export default {
       statusSensorLuz: []
     };
   },
-  
+
   firestore() {
     return {
-      statusTemperatura: db.collection("LmLog").doc("log"), 
-      statusHumidadePressao: db.collection("BMData").doc("log"), 
+      statusTemperatura: db.collection("LmLog").doc("log"),
+      statusHumidadePressao: db.collection("BMData").doc("log"),
       statusSensorLuz: db.collection("PhotosensorLog").doc("log")
     };
-  }, 
+  },
   methods: {
     getTodosUpdates() {
       this.getUpdateTemperatura(),
-      this.getUpdateHumidade(),
-      this.getUpdateSensorLuz()
+        this.getUpdateHumidade(),
+        this.getUpdateSensorLuz();
     },
-    getUpdateTemperatura () {
+    getUpdateTemperatura() {
       this.axios
         .post("http://172.12.0.50:3333/user/lm35Data")
         .then(function(response) {})
@@ -140,7 +135,7 @@ export default {
           console.log(error);
         });
     },
-    getUpdateHumidade () {
+    getUpdateHumidade() {
       this.axios
         .post("http://172.12.0.50:3333/user/bme280Data")
         .then(function(response) {})
@@ -148,7 +143,7 @@ export default {
           console.log(error);
         });
     },
-    getUpdateSensorLuz () {
+    getUpdateSensorLuz() {
       this.axios
         .post("http://172.12.0.50:3333/user/photosensorData")
         .then(function(response) {

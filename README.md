@@ -1,7 +1,5 @@
 
-<p align="center">
-    <h1><strong> ArduEVE </strong></h1>
-</p>
+<h1 align="center">ArduEVE</h1>
 <p align="center">
   <a href="https://github.com/hpbonfim/ardueve#readme">
     <img src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000"/>

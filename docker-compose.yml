@@ -12,11 +12,28 @@ services:
      - /var/run/docker.sock:/var/run/docker.sock
      - portainer-data:/data
     
+  # microservice para controlar o Arduino
+  ms-arduino:
+    build: "./ms-arduino/"
+    container_name: ms-arduino
+    #restart: always
+    privileged: true
+    devices:
+      - /dev:/dev
+    ports:
+      - ${PORT_MS_ARDUINO}
+    networks:
+      backend:
+        ipv4_address: ${IP_MS_ARDUINO}
+    entrypoint:
+      - "/usr/local/bin/docker-entrypoint.sh"
+
   # microservice para controlar o BackEnd (NODEJS)
   ms-backend:
-    image: 750937976472.dkr.ecr.sa-east-1.amazonaws.com/ms-backend:latest
-    depends_on:
-      - ms-backend
+    build: "./ms-backend/"
+    container_name: ms-backend
+    restart: always
+    privileged: true
     ports:
       - "3333:3333"
     networks:
@@ -27,7 +44,9 @@ services:
 
   # # microservice para controlar o FrontEnd (VUE)
   ms-frontend:
-    image: 750937976472.dkr.ecr.sa-east-1.amazonaws.com/ms-frontend:latest
+    build: "./ms-frontend/"
+    container_name: ms-frontend
+    restart: always
     depends_on:
       - ms-backend
     ports:
@@ -42,6 +61,11 @@ services:
 networks:
   frontend:
   backend:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: ${SUBNET_BACKEND}
 
 volumes:
   portainer-data:

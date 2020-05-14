@@ -3,14 +3,15 @@ services:
   # Portainer para gerenciar os Dockerfiles
   portainer:
     image: portainer/portainer:latest
+    container_name: portainer
+    restart: always
     ports:
-      - "9000:9000"
+    - ${PORTAINER_PORT}
     networks:
-     - frontend
-     - backend
+    - backend
     volumes:
-     - /var/run/docker.sock:/var/run/docker.sock
-     - portainer-data:/data
+    - /var/run/docker.sock:/var/run/docker.sock
+    - portainer-data:/data
     
   # microservice para controlar o Arduino
   ms-arduino:
@@ -35,10 +36,10 @@ services:
     restart: always
     privileged: true
     ports:
-      - "3333:3333"
+      - ${PORT_MS_BACKEND}
     networks:
-      - frontend
-      - backend
+      backend:
+        ipv4_address: ${IP_MS_BACKEND}
     entrypoint:
       - '/usr/local/bin/docker-entrypoint.sh'
 
@@ -50,16 +51,36 @@ services:
     depends_on:
       - ms-backend
     ports:
-      - "80:80"
+      - ${PORT_MS_FRONTEND}
     networks:
-      - frontend
-      - backend
+      frontend: 
+        ipv4_address: ${NET_IP_FRONTEND}
+      backend:
+        ipv4_address: ${IP_MS_FRONTEND}
   
+  # service para expor o backend para o Google Cloud Services via HTTPS
+  ngrok:
+    container_name: ngrok
+    image: wernight/ngrok
+    restart: always
+    command: ngrok http ms-backend:${BACKEND_PORT} -authtoken=${NGROK_AUTH}
+    networks:
+     backend:
+        ipv4_address: ${IP_MS_NGROK}
+    ports:
+      - ${PORT_MS_NGROK}
+
   # microservice para fazer deploy automático para o Firebase(PQ TO COM PREGUIÇA)
    
 # configuração dos networks 
 networks:
   frontend:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: ${SUBNET_FRONTEND}
+
   backend:
     driver: bridge
     ipam:

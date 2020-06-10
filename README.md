@@ -25,19 +25,19 @@
     <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" target="https://github.com/hpbonfim/ardueve#readme" />
   </a>
 </p>
+
 <p align="center"> 
-<img src="png/Ardueve.png" alt="Ardueve"/>
+    <img width="60%" height="auto" src="ms-frontend/src/assets/robotOK.gif" alt="Ardueve"/>
 </p>
-<p align="right">  
-<img src="png/Controle.png" alt="Controle"/>
-</p>
-<p> 
-<img src="png/Sensores.png" alt="Sensores"/>
-</p>
+
 
 [ArduEVE](https://github.com/hpbonfim/ardueve#readme) significa a união de (**Ardu**ino) +  "**E**xtraterrestrial **V**egetation Evaluator" 
 
 Sistema com arquitetura em microserviços responsável por **controlar sensores e relays** de um ambiente devidamente adaptado.
+
+<p align="center"> 
+    <img src="Ardueve.png" alt="Ardueve"/>
+</p>
 
 
 # Ferramentas Utilizadas
